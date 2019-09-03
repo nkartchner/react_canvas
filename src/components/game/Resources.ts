@@ -1,3 +1,31 @@
+import { RefObject } from "react";
+import Map from "./Map";
+
+export enum GameState {
+  WAITING = 5,
+  PAUSE = 6,
+  PLAYING = 7,
+  COUNTDOWN = 8,
+  EATEN_PAUSE = 9,
+  DYING = 10
+}
+export interface Position {
+  x: number;
+  y: number;
+  new?: any;
+}
+export interface CanvasState {
+  height: number;
+  width: number;
+  mousePosition: {
+    x: number;
+    y: number;
+  };
+  canvas: RefObject<HTMLCanvasElement>;
+  interval?: NodeJS.Timeout;
+  map: undefined | Map;
+}
+
 export const WALLS = [
   [
     { move: [0, 9.5] },
@@ -184,3 +212,142 @@ export const WALLS = [
     { line: [10.5, 9.5] }
   ]
 ];
+
+export function initMap(): Array<number[]> {
+  return [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 4, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 4, 0],
+    [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0],
+    [0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [2, 2, 2, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 2, 2, 2],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 3, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [2, 2, 2, 2, 1, 1, 1, 0, 3, 3, 3, 0, 1, 1, 1, 2, 2, 2, 2],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [2, 2, 2, 0, 1, 0, 1, 1, 1, 2, 1, 1, 1, 0, 1, 0, 2, 2, 2],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+    [0, 4, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 4, 0],
+    [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0],
+    [0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  ];
+}
+
+export enum KeyCode {
+  UP = 3,
+  LEFT = 2,
+  DOWN = 1,
+  RIGHT = 11,
+  NONE = 4
+}
+
+export const KEY = {
+  0: 48,
+  1: 49,
+  2: 50,
+  3: 51,
+  4: 52,
+  5: 53,
+  6: 54,
+  7: 55,
+  8: 56,
+  9: 57,
+  A: 65,
+  ALT: 18,
+  APOSTROPHE: 222,
+  B: 66,
+  BACKSPACE: 8,
+  C: 67,
+  CAPS_LOCK: 20,
+  TAB: 9,
+  NUM_PAD_CLEAR: 12,
+  ENTER: 13,
+  SHIFT: 16,
+  CTRL: 17,
+  PAUSE: 19,
+  ESCAPE: 27,
+  SPACEBAR: 32,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34,
+  END: 35,
+  HOME: 36,
+  ARROW_LEFT: 37,
+  ARROW_UP: 38,
+  ARROW_RIGHT: 39,
+  ARROW_DOWN: 40,
+  PRINT_SCREEN: 44,
+  INSERT: 45,
+  DELETE: 46,
+  SEMICOLON: 59 || 186,
+  WINDOWS_LEFT: 91,
+  WINDOWS_RIGHT: 92,
+  SELECT: 93,
+  NUM_PAD_ASTERISK: 106,
+  NUM_PAD_PLUS_SIGN: 107,
+  "NUM_PAD_HYPHEN-MINUS": 109,
+  NUM_PAD_FULL_STOP: 110,
+  NUM_PAD_SOLIDUS: 111,
+  NUM_LOCK: 144,
+  SCROLL_LOCK: 145,
+  EQUALS_SIGN: 187,
+  COMMA: 188,
+  "HYPHEN-MINUS": 189,
+  FULL_STOP: 190,
+  SOLIDUS: 191,
+  GRAVE_ACCENT: 192,
+  LEFT_SQUARE_BRACKET: 219,
+  REVERSE_SOLIDUS: 220,
+  RIGHT_SQUARE_BRACKET: 221,
+  D: 68,
+  E: 69,
+  F: 70,
+  F1: 112,
+  F10: 121,
+  F11: 122,
+  F12: 123,
+  F2: 113,
+  F3: 114,
+  F4: 115,
+  F5: 116,
+  F6: 117,
+  F7: 118,
+  F8: 119,
+  F9: 120,
+  G: 71,
+  H: 72,
+  I: 73,
+  J: 74,
+  K: 75,
+  L: 76,
+  M: 77,
+  N: 78,
+  NUM_PAD_0: 96,
+  NUM_PAD_1: 97,
+  NUM_PAD_2: 98,
+  NUM_PAD_3: 99,
+  NUM_PAD_4: 100,
+  NUM_PAD_5: 101,
+  NUM_PAD_6: 102,
+  NUM_PAD_7: 103,
+  NUM_PAD_8: 104,
+  NUM_PAD_9: 105,
+  O: 79,
+  P: 80,
+  Q: 81,
+  R: 82,
+  S: 83,
+  T: 84,
+  U: 85,
+  V: 86,
+  W: 87,
+  X: 88,
+  Y: 89,
+  Z: 90
+};

@@ -1,47 +1,43 @@
-import { Key } from "./Key";
-import { initMap } from "./initMap";
-import { WALLS } from "./WALLS";
-export class Map {
+import { WALLS, initMap } from "./Resources";
+import Pacman from "../Pacman";
+
+export default class Map {
   blockSize: number;
   height: number = 0;
   width: number = 0;
   pillSize = 0;
-  private grid: Array<number[]> = [];
+  map: Array<number[]> = [];
   constructor(size: number) {
     this.blockSize = size;
     this.reset();
   }
   reset() {
-    this.grid = initMap();
-    this.height = this.grid.length;
-    this.width = this.grid[0].length;
-  }
-  get map() {
-    return this.grid;
+    this.map = initMap();
+    this.height = this.map.length;
+    this.width = this.map[0].length;
   }
   withinBounds = (y: number, x: number) => {
     return y >= 0 && y < this.height && x >= 0 && x < this.width;
   };
-  isWall = (pos: { x: number; y: number }) => {
+  isWallSpace = (pos: { x: number; y: number }) => {
     return (
-      this.withinBounds(pos.y, pos.x) && this.grid[pos.y][pos.x] === Key.WALL
+      this.withinBounds(pos.y, pos.x) && this.map[pos.y][pos.x] === Pacman.WALL
     );
   };
   isFloorSpace = (pos: { x: number; y: number }) => {
     if (!this.withinBounds(pos.y, pos.x)) {
       return false;
     }
-    const peice = this.grid[pos.y][pos.x];
-    return peice === Key.EMPTY || peice === Key.BISCUIT || peice === Key.PILL;
+    const peice = this.map[pos.y][pos.x];
+    return peice === Pacman.EMPTY || peice === Pacman.BISCUIT || peice === Pacman.PILL;
   };
   drawPills = (ctx: CanvasRenderingContext2D) => {
-    console.log("drawing the pills");
     if (++this.pillSize > 30) {
       this.pillSize = 0;
     }
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
-        if (this.grid[i][j] === Key.PILL) {
+        if (this.map[i][j] === Pacman.PILL) {
           ctx.beginPath();
           ctx.fillStyle = "#000";
           ctx.fillRect(
@@ -66,7 +62,6 @@ export class Map {
     }
   };
   draw = (ctx: CanvasRenderingContext2D) => {
-    console.log("drawing initialized");
     let size = this.blockSize;
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, this.width * size, this.height * size);
@@ -78,7 +73,6 @@ export class Map {
     }
   };
   drawWall = (ctx: CanvasRenderingContext2D) => {
-    console.log("drawing the wall");
     ctx.strokeStyle = "#0000FF";
     ctx.lineWidth = 5;
     ctx.lineCap = "round";
@@ -102,16 +96,15 @@ export class Map {
     }
   };
   drawBlock = (i: number, j: number, ctx: CanvasRenderingContext2D) => {
-    console.log("drawing a block");
-    const layout = this.grid[i][j];
-    if (layout === Key.PILL) {
+    const layout = this.map[i][j];
+    if (layout === Pacman.PILL) {
       return;
     }
     ctx.beginPath();
     if (
-      layout === Key.BISCUIT ||
-      layout === Key.BLOCK ||
-      layout === Key.EMPTY
+      layout === Pacman.BISCUIT ||
+      layout === Pacman.BLOCK ||
+      layout === Pacman.EMPTY
     ) {
       ctx.fillStyle = "#000";
       ctx.fillRect(
@@ -120,7 +113,8 @@ export class Map {
         this.blockSize,
         this.blockSize
       );
-      if (layout === Key.BISCUIT) {
+      if (layout === Pacman.BISCUIT) {
+        ctx.fillStyle = "#FFF";
         ctx.fillRect(
           j * this.blockSize + this.blockSize / 2.5,
           i * this.blockSize + this.blockSize / 2.5,
@@ -132,10 +126,9 @@ export class Map {
     ctx.closePath();
   };
   block(pos: { x: number; y: number }) {
-    return this.grid[pos.y][pos.x];
+    return this.map[pos.y][pos.x];
   }
-
   setBlock(pos: { x: number; y: number }, type: any) {
-    this.grid[pos.y][pos.x] = type;
+    this.map[pos.y][pos.x] = type;
   }
 }

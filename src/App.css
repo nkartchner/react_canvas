@@ -1,4 +1,4 @@
-body,
+/* body,
 html {
   margin: 0;
   padding: 0;
@@ -8,7 +8,7 @@ html {
 }
 .App {
   text-align: center;
-  /* background-color: black; */
+  background-color: black;
 }
 
 .canvas {
@@ -21,4 +21,8 @@ html {
   width: 382px;
   border-radius: 5px;
   margin: 20px auto;
+} */
+.App {
+  font-family: sans-serif;
+  text-align: center;
 }
